@@ -1,0 +1,21 @@
+# Created by https://www.toptal.com/developers/gitignore/api/theos-tweak
+# Edit at https://www.toptal.com/developers/gitignore?templates=theos-tweak
+
+### THEOS-Tweak ###
+._*
+*.deb
+.debmake
+_
+obj
+.theos
+.DS_Store
+
+#ended up just adding everything in the .xcworkspace dir bc just excluding xcworkspaces doesn't work woeis
+*.xcworkspace
+*.xcworkspacedata
+IDEWorkspaceChecks.plist
+*.xcuserdatad
+*.xcuserstate
+*.xcbkptlist
+# End of https://www.toptal.com/developers/gitignore/api/theos-tweak
+
