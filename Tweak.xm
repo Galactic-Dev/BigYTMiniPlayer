@@ -1,26 +1,33 @@
-#define kWidth [UIScreen mainScreen].bounds.size.width 
-@interface YTNGWatchMiniBarView : UIView
-- (void)setWatchMiniPlayerLayout:(NSInteger)arg1;
-@property (nonatomic, assign, readwrite) NSInteger watchMiniPlayerLayout;
+#import <objc/runtime.h>
+#include <Foundation/Foundation.h>
+#include <RemoteLog.h>
+#include <UIKit/UIKit.h>
+
+@interface YTMainAppVideoPlayerOverlayView : UIView
+-(UIViewController *)_viewControllerForAncestor;
 @end
 
-%hook YTNGWatchMiniBarView
+@interface YTWatchMiniBarView : UIView
+@end
 
+%hook YTWatchMiniBarView
+-(void)setWatchMiniPlayerLayout:(int)arg1 {
+	%orig(1);
+}
+-(int)watchMiniPlayerLayout {
+	return 1;
+}
+-(void)layoutSubviews {
+    %orig;
+    self.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width - self.frame.size.width), self.frame.origin.y, self.frame.size.width, self.frame.size.height);
+}
+%end
 
-- (void)layoutSubviews {
-
-
-	%orig;
-	MSHookIvar<NSInteger>(self, "_watchMiniPlayerLayout") = 1;
-
-	CGRect newFrame = self.frame;
-	CGFloat kMiniPlayerWidth = self.frame.size.width;
-  
-	newFrame.origin.x = kWidth - kMiniPlayerWidth;
-	[self setFrame:newFrame];
-
-
-
-
+%hook YTMainAppVideoPlayerOverlayView
+-(BOOL)isUserInteractionEnabled {
+    if([[self _viewControllerForAncestor].parentViewController.parentViewController isKindOfClass:%c(YTWatchMiniBarViewController)]) {
+        return NO;
+    }
+    return %orig;
 }
 %end
