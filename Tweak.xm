@@ -10,6 +10,7 @@
 @interface YTWatchMiniBarView : UIView
 @end
 
+%group Main
 %hook YTWatchMiniBarView
 -(void)setWatchMiniPlayerLayout:(int)arg1 {
 	%orig(1);
@@ -31,3 +32,10 @@
     return %orig;
 }
 %end
+%end
+
+%ctor {
+    if(UIDevice.currentDevice.userInterfaceIdiom != UIUserInterfaceIdiomPad) {
+        %init(Main);
+    }
+}
